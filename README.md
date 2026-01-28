@@ -48,7 +48,7 @@ This is a **psychological intervention tool** that converts overwhelming goals i
 
 ### Prerequisites
 - Docker & Docker Compose
-- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+- Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
 
 ### Installation
 
@@ -58,7 +58,7 @@ cd Neurathon-2026
 
 # 2. Configure your API key
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Edit .env and add your GEMINI_API_KEY
 
 # 3. Start the application
 docker-compose up --build
@@ -178,7 +178,7 @@ Neurathon-2026/
 |-------|-----------|------|
 | **Backend** | FastAPI | Fast, async, modern Python |
 | **Database** | SQLite | Local-first, zero setup |
-| **AI** | OpenAI GPT-4 | Best prompt adherence |
+| **AI** | Google Gemini (gemini-2.0-flash-exp) | Best prompt adherence |
 | **Frontend** | Vanilla HTML/CSS/JS | Lightweight, no bloat |
 | **Fonts** | Lexend & OpenDyslexic | Neuro-inclusive typography |
 | **Deployment** | Docker | One-command setup |

@@ -3,7 +3,7 @@
 ## Prerequisites
 
 1. **Docker Desktop** installed ([Download here](https://www.docker.com/products/docker-desktop))
-2. **OpenAI API Key** ([Get one here](https://platform.openai.com/api-keys))
+2. **Google Gemini API Key** ([Get one here](https://aistudio.google.com/app/apikey))
 
 ## Setup (3 minutes)
 
@@ -15,9 +15,9 @@ cp .env.example .env
 
 # Open .env in your editor and add your API key
 # Change this line:
-# OPENAI_API_KEY=sk-your-api-key-here
+# GEMINI_API_KEY=AIzaSy...your-key...
 # To:
-# OPENAI_API_KEY=sk-proj-actualkey123...
+# GEMINI_API_KEY=AIzaSyAoZ1yA3yyvDYYqUMpHsfwsMh4VfAHAAKI
 ```
 
 ### Step 2: Start the Application
@@ -117,7 +117,7 @@ Your preference is saved automatically.
 cat .env
 
 # Make sure it shows:
-OPENAI_API_KEY=sk-proj-...actual-key...
+GEMINI_API_KEY=AIzaSyAoZ1yA3yyvDYYqUMpHsfwsMh4VfAHAAKI
 ```
 
 ### Docker Build Issues
@@ -158,7 +158,7 @@ This file persists across Docker restarts. Your data never leaves your machine.
 - Step completion history
 - Font preferences
 
-✅ **What gets sent to OpenAI:**
+✅ **What gets sent to Google Gemini:**
 - Only task descriptions (e.g., "Clean my room")
 - NO personal info, NO timestamps, NO user ID
 

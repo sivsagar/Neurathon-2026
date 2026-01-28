@@ -32,7 +32,7 @@ graph TB
     end
     
     subgraph "External"
-        LLM[OpenAI GPT-4]
+        LLM[Google Gemini]
     end
     
     UI --> API
@@ -288,7 +288,7 @@ def _validate_step(response):
 
 ### Quality Assurance
 
-- **JSON mode**: Enforced by OpenAI API
+- **JSON mode**: Simplified by Gemini's generation config
 - **Temperature**: 0.7 (balanced creativity/consistency)
 - **Max tokens**: 150 (force brevity)
 - **Retry logic**: Fallback if validation fails
@@ -373,8 +373,8 @@ Single Container:
 ### Environment Variables
 
 ```bash
-OPENAI_API_KEY=sk-...          # Required
-MODEL_NAME=gpt-4               # Optional (default: gpt-4)
+GEMINI_API_KEY=AIzaSy...          # Required
+MODEL_NAME=gemini-2.0-flash # Optional (default: gemini-2.0-flash)
 MAX_RESPONSE_TIME_SECONDS=5    # Optional (default: 5)
 ```
 
