@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     """Application settings with environment variable support."""
     
     # LLM Configuration
-    openai_api_key: str
-    model_name: str = "gpt-4"
+    gemini_api_key: str
+    model_name: str = "gemini-2.0-flash-exp"
     max_tokens: int = 150
     temperature: float = 0.7
     

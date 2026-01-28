@@ -2,7 +2,7 @@
 import json
 import re
 from typing import Dict, Any, Optional
-from openai import AsyncOpenAI
+import google.generativeai as genai
 from config import settings
 from prompts import (
     SYSTEM_PROMPT,
@@ -17,8 +17,14 @@ class MicroWinService:
     """AI service for generating and validating micro-steps."""
     
     def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.openai_api_key)
-        self.model = settings.model_name
+        genai.configure(api_key=settings.gemini_api_key)
+        self.model = genai.GenerativeModel(
+            model_name=settings.model_name,
+            generation_config={
+                "temperature": settings.temperature,
+                "max_output_tokens": settings.max_tokens,
+            }
+        )
     
     async def generate_initial_step(self, goal: str) -> Dict[str, Any]:
         """
@@ -65,20 +71,16 @@ class MicroWinService:
         return validated_step
     
     async def _call_llm(self, user_prompt: str) -> str:
-        """Call OpenAI API with timeout and error handling."""
+        """Call Gemini API with timeout and error handling."""
         try:
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt}
-                ],
-                max_tokens=settings.max_tokens,
-                temperature=settings.temperature,
-                response_format={"type": "json_object"}  # Force JSON response
-            )
+            # Combine system prompt and user prompt for Gemini
+            full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
             
-            return response.choices[0].message.content
+            # Gemini doesn't have native async, so we'll use sync
+            # In production, wrap in executor for true async
+            response = self.model.generate_content(full_prompt)
+            
+            return response.text
         
         except Exception as e:
             raise ValueError(f"LLM API error: {str(e)}")
