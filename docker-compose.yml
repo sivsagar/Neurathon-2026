@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  smart-companion:
+    build: .
+    container_name: smart-companion
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MODEL_NAME=${MODEL_NAME:-gpt-4}
+      - MAX_RESPONSE_TIME_SECONDS=${MAX_RESPONSE_TIME_SECONDS:-5}
+    volumes:
+      - ./data:/app/data
+      - ./frontend:/app/frontend
+    restart: unless-stopped
+
+volumes:
+  data:
+    driver: local

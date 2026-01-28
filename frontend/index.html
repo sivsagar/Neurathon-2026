@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Smart Companion - AI assistant for neurodivergent users overcoming task initiation paralysis">
+    <title>The Smart Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Settings Panel (Top-right) -->
+    <div class="settings-panel">
+        <button id="fontToggle" class="icon-btn" aria-label="Toggle dyslexia-friendly font" title="Toggle Font">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Logo/Header -->
+        <header class="header">
+            <h1>The Smart Companion</h1>
+            <p class="tagline">One step at a time</p>
+        </header>
+
+        <!-- Input Screen -->
+        <div id="inputScreen" class="screen active">
+            <div class="input-container">
+                <label for="taskInput" class="screen-title">What would you like to work on?</label>
+                <textarea 
+                    id="taskInput" 
+                    class="task-input" 
+                    placeholder="e.g., Clean my room, Reply to email, Start homework..."
+                    rows="3"
+                    maxlength="500"
+                    aria-describedby="taskInputHelp"
+                ></textarea>
+                <p id="taskInputHelp" class="help-text">Describe any task that feels overwhelming</p>
+                <button id="startBtn" class="primary-btn" disabled>
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    <span>Start</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="screen">
+            <div class="loading-container">
+                <div class="spinner" aria-label="Loading"></div>
+                <p class="loading-text">Breaking it down for you...</p>
+            </div>
+        </div>
+
+        <!-- Step Screen (Single-Task View) -->
+        <div id="stepScreen" class="screen">
+            <div class="step-container">
+                <div class="step-header">
+                    <span id="stepBadge" class="time-badge" aria-label="Estimated time">~10 sec</span>
+                </div>
+                <div class="step-content">
+                    <p id="stepText" class="step-text">Pick up the first item you see on the floor</p>
+                </div>
+                <div class="action-buttons">
+                    <button id="doneBtn" class="action-btn done-btn">
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <path d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span>Done</span>
+                    </button>
+                    <button id="tooHardBtn" class="action-btn hard-btn">
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Too Hard</span>
+                    </button>
+                    <button id="pauseBtn" class="action-btn pause-btn">
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 4H6v16h4V4zM18 4h-4v16h4V4z"/>
+                        </svg>
+                        <span>Pause</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paused Screen -->
+        <div id="pausedScreen" class="screen">
+            <div class="paused-container">
+                <h2>Task Paused</h2>
+                <p class="paused-text">Your progress is saved. You can come back anytime.</p>
+                <button id="newTaskBtn" class="primary-btn">
+                    <span>Start New Task</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
