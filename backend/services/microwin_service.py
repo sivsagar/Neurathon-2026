@@ -1,8 +1,8 @@
-"""Core AI service for Micro-Win generation."""
+"""Core AI service for Micro-Win generation using local Ollama."""
 import json
 import re
 from typing import Dict, Any, Optional
-import google.generativeai as genai
+import httpx
 from config import settings
 from prompts import (
     SYSTEM_PROMPT,
@@ -11,20 +11,17 @@ from prompts import (
     get_simplification_prompt,
     sanitize_goal_for_llm
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MicroWinService:
-    """AI service for generating and validating micro-steps."""
+    """AI service for generating and validating micro-steps using Ollama."""
     
     def __init__(self):
-        genai.configure(api_key=settings.gemini_api_key)
-        self.model = genai.GenerativeModel(
-            model_name=settings.model_name,
-            generation_config={
-                "temperature": settings.temperature,
-                "max_output_tokens": settings.max_tokens,
-            }
-        )
+        self.base_url = settings.ollama_base_url.rstrip('/')
+        self.model = settings.ollama_model
     
     async def generate_initial_step(self, goal: str) -> Dict[str, Any]:
         """
@@ -71,19 +68,30 @@ class MicroWinService:
         return validated_step
     
     async def _call_llm(self, user_prompt: str) -> str:
-        """Call Gemini API with timeout and error handling."""
+        """Call local Ollama API with error handling."""
         try:
-            # Combine system prompt and user prompt for Gemini
-            full_prompt = f"{SYSTEM_PROMPT}\n\n{user_prompt}"
+            url = f"{self.base_url}/api/generate"
             
-            # Gemini doesn't have native async, so we'll use sync
-            # In production, wrap in executor for true async
-            response = self.model.generate_content(full_prompt)
+            payload = {
+                "model": self.model,
+                "prompt": f"{SYSTEM_PROMPT}\n\n{user_prompt}",
+                "stream": False,
+                "options": {
+                    "temperature": settings.temperature,
+                    "num_predict": settings.max_tokens,
+                }
+            }
             
-            return response.text
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(url, json=payload)
+                response.raise_for_status()
+                data = response.json()
+                
+                return data.get("response", "")
         
         except Exception as e:
-            raise ValueError(f"LLM API error: {str(e)}")
+            logger.error(f"Ollama API error: {str(e)}")
+            raise ValueError(f"Ollama API error: {str(e)}")
     
     def _validate_step(self, llm_response: str, enforce_shorter: bool = False) -> Dict[str, Any]:
         """

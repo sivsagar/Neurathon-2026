@@ -2,23 +2,18 @@
 
 ## Prerequisites
 
-1. **Docker Desktop** installed ([Download here](https://www.docker.com/products/docker-desktop))
-2. **Google Gemini API Key** ([Get one here](https://aistudio.google.com/app/apikey))
+1. **Ollama** installed ([Download here](https://ollama.ai))
+2. **Mistral model** loaded (`ollama pull mistral`)
 
 ## Setup (3 minutes)
 
-### Step 1: Configure API Key
+# Step 1: Initialize Ollama
+# Run in your terminal:
+ollama pull mistral
 
-```bash
-# Copy the environment template
+# Step 2: Configure Environment
 cp .env.example .env
-
-# Open .env in your editor and add your API key
-# Change this line:
-# GEMINI_API_KEY=AIzaSy...your-key...
-# To:
-# GEMINI_API_KEY=AIzaSyAoZ1yA3yyvDYYqUMpHsfwsMh4VfAHAAKI
-```
+# Default settings work for localhost!
 
 ### Step 2: Start the Application
 
@@ -117,7 +112,8 @@ Your preference is saved automatically.
 cat .env
 
 # Make sure it shows:
-GEMINI_API_KEY=AIzaSyAoZ1yA3yyvDYYqUMpHsfwsMh4VfAHAAKI
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=mistral
 ```
 
 ### Docker Build Issues
@@ -153,14 +149,13 @@ This file persists across Docker restarts. Your data never leaves your machine.
 
 ## Privacy
 
-✅ **What stays local:**
-- All your task data
-- Step completion history
-- Font preferences
+✅ **What stays on your machine:**
+- Every single word you type
+- Your task history
+- AI-generated steps (locally processed)
 
-✅ **What gets sent to Google Gemini:**
-- Only task descriptions (e.g., "Clean my room")
-- NO personal info, NO timestamps, NO user ID
+✅ **External Data Flow:**
+- **Zero.** No data is sent to any external server. This is 100% offline.
 
 ---
 

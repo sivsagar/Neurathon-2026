@@ -48,7 +48,8 @@ This is a **psychological intervention tool** that converts overwhelming goals i
 
 ### Prerequisites
 - Docker & Docker Compose
-- Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
+- **Ollama** installed and running locally ([Download here](https://ollama.ai))
+- Mistral or Llama3 model pulled (`ollama pull mistral`)
 
 ### Installation
 
@@ -56,9 +57,9 @@ This is a **psychological intervention tool** that converts overwhelming goals i
 # 1. Clone or download the project
 cd Neurathon-2026
 
-# 2. Configure your API key
+# 2. Configure environment
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and ensure OLLAMA_MODEL is set (default: mistral)
 
 # 3. Start the application
 docker-compose up --build
@@ -178,7 +179,7 @@ Neurathon-2026/
 |-------|-----------|------|
 | **Backend** | FastAPI | Fast, async, modern Python |
 | **Database** | SQLite | Local-first, zero setup |
-| **AI** | Google Gemini (gemini-2.0-flash-exp) | Best prompt adherence |
+| **AI** | Ollama (Local LLM) | 100% Private & Offline |
 | **Frontend** | Vanilla HTML/CSS/JS | Lightweight, no bloat |
 | **Fonts** | Lexend & OpenDyslexic | Neuro-inclusive typography |
 | **Deployment** | Docker | One-command setup |

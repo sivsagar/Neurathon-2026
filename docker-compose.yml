@@ -7,9 +7,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - MODEL_NAME=${MODEL_NAME:-gemini-2.0-flash}
-      - MAX_RESPONSE_TIME_SECONDS=${MAX_RESPONSE_TIME_SECONDS:-5}
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=llama3:latest
+      - MAX_RESPONSE_TIME_SECONDS=${MAX_RESPONSE_TIME_SECONDS:-10}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data:/app/data
       - ./frontend:/app/frontend

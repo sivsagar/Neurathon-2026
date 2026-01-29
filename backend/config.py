@@ -7,14 +7,14 @@ from typing import Optional
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
     
-    # LLM Configuration
-    gemini_api_key: str
-    model_name: str = "gemini-flash-latest"
-    max_tokens: int = 150
+    # LLM Configuration (Ollama)
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3:latest"
+    max_tokens: int = 250
     temperature: float = 0.7
     
     # Performance Targets
-    max_response_time_seconds: int = 5
+    max_response_time_seconds: int = 10
     
     # Database
     database_path: str = "data/smart_companion.db"

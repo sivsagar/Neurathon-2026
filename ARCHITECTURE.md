@@ -31,8 +31,8 @@ graph TB
         DB[SQLite Database]
     end
     
-    subgraph "External"
-        LLM[Google Gemini]
+    subgraph "Local Environment"
+        LLM[Ollama Local API]
     end
     
     UI --> API
@@ -373,9 +373,9 @@ Single Container:
 ### Environment Variables
 
 ```bash
-GEMINI_API_KEY=AIzaSy...          # Required
-MODEL_NAME=gemini-2.0-flash # Optional (default: gemini-2.0-flash)
-MAX_RESPONSE_TIME_SECONDS=5    # Optional (default: 5)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=mistral
+MAX_RESPONSE_TIME_SECONDS=10
 ```
 
 ### Volume Persistence
