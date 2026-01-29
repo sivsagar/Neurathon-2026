@@ -1,4 +1,4 @@
-"""FastAPI application - The Smart Companion API."""
+"""FastAPI application - MicroWin API."""
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -35,8 +35,8 @@ async def lifespan(app: FastAPI):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="The Smart Companion API",
-    description="AI assistant for neurodivergent users - Task Initiation support",
+    title="MicroWin: The Cognitive Prosthetic API",
+    description="Cognitive prosthetic for neurodivergent users - Task Initiation support",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -283,7 +283,7 @@ async def get_insights():
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "service": "The Smart Companion"}
+    return {"status": "healthy", "service": "MicroWin"}
 
 
 # Mount static files (frontend)

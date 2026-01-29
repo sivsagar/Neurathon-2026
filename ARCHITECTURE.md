@@ -2,7 +2,7 @@
 
 ## System Overview
 
-The Smart Companion is a **local-first, privacy-focused AI assistant** that helps neurodivergent users overcome task initiation paralysis through micro-step generation.
+The MicroWin is a **local-first, privacy-focused AI assistant** that helps neurodivergent users overcome task initiation paralysis through micro-step generation.
 
 ### Core Design Principles
 

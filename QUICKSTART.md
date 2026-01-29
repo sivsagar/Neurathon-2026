@@ -33,7 +33,7 @@ Navigate to: **http://localhost:8000**
 
 ---
 
-## Using The Smart Companion
+## Using MicroWin
 
 ### First Task
 

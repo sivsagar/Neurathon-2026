@@ -1,4 +1,4 @@
-# The Smart Companion 🧠
+# MicroWin: The Cognitive Prosthetic 🧠
 
 **AI-powered assistant for neurodivergent individuals overcoming task initiation paralysis**
 
@@ -40,7 +40,7 @@ This is a **psychological intervention tool** that converts overwhelming goals i
 ### What Makes This Different?
 
 ❌ **Traditional apps**: "Break down 'clean room' into subtasks"  
-✅ **The Smart Companion**: Shows ONE step. Just one. Nothing else.
+✅ **MicroWin**: Shows ONE step. Just one. Nothing else.
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * The Smart Companion - Frontend Application
+ * MicroWin - Frontend Application
  * Handles UI state management and API communication
  */
 

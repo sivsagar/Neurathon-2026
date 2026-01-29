@@ -1,4 +1,4 @@
-# Multi-stage build for The Smart Companion
+# Multi-stage build for MicroWin
 FROM python:3.11-slim as backend
 
 WORKDIR /app
