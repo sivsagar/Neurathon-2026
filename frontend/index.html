@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The Smart Companion - AI assistant for neurodivergent users overcoming task initiation paralysis">
+    <meta name="description"
+        content="The Smart Companion - AI assistant for neurodivergent users overcoming task initiation paralysis">
     <title>The Smart Companion</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <!-- Settings Panel (Top-right) -->
     <div class="settings-panel">
+        <button id="insightsToggle" class="icon-btn" aria-label="View productivity insights" title="Energy Insights">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+            </svg>
+        </button>
         <button id="fontToggle" class="icon-btn" aria-label="Toggle dyslexia-friendly font" title="Toggle Font">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 7h16M4 12h16M4 17h16"/>
+                <path d="M4 7h16M4 12h16M4 17h16" />
             </svg>
         </button>
     </div>
@@ -32,18 +43,26 @@
         <div id="inputScreen" class="screen active">
             <div class="input-container">
                 <label for="taskInput" class="screen-title">What would you like to work on?</label>
-                <textarea 
-                    id="taskInput" 
-                    class="task-input" 
-                    placeholder="e.g., Clean my room, Reply to email, Start homework..."
-                    rows="3"
-                    maxlength="500"
-                    aria-describedby="taskInputHelp"
-                ></textarea>
+                <textarea id="taskInput" class="task-input"
+                    placeholder="e.g., Clean my room, Reply to email, Start homework..." rows="3" maxlength="500"
+                    aria-describedby="taskInputHelp"></textarea>
                 <p id="taskInputHelp" class="help-text">Describe any task that feels overwhelming</p>
+
+                <div class="energy-selector">
+                    <p class="selector-label">How's your energy level?</p>
+                    <div class="energy-options">
+                        <button class="energy-btn" data-level="low" title="Low energy - very small steps">Low</button>
+                        <button class="energy-btn active" data-level="medium"
+                            title="Medium energy - standard steps">Medium</button>
+                        <button class="energy-btn" data-level="high"
+                            title="High energy - can handle bigger steps">High</button>
+                    </div>
+                </div>
+
                 <button id="startBtn" class="primary-btn" disabled>
-                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                     <span>Start</span>
                 </button>
@@ -63,26 +82,48 @@
             <div class="step-container">
                 <div class="step-header">
                     <span id="stepBadge" class="time-badge" aria-label="Estimated time">~10 sec</span>
+                    <button id="speakBtn" class="icon-btn small" title="Read step aloud">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.08" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Dopamine Bar (Progress) -->
+                <div class="progress-wrapper">
+                    <div id="dopamineBar" class="progress-bar" style="width: 0%"></div>
                 </div>
                 <div class="step-content">
                     <p id="stepText" class="step-text">Pick up the first item you see on the floor</p>
                 </div>
+
+                <!-- Mid-task Energy Adjustment -->
+                <div class="energy-selector mini">
+                    <div class="energy-options">
+                        <button class="energy-btn" data-level="low" title="Low energy">L</button>
+                        <button class="energy-btn active" data-level="medium" title="Medium energy">M</button>
+                        <button class="energy-btn" data-level="high" title="High energy">H</button>
+                    </div>
+                </div>
                 <div class="action-buttons">
                     <button id="doneBtn" class="action-btn done-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                            <path d="M5 13l4 4L19 7"/>
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3">
+                            <path d="M5 13l4 4L19 7" />
                         </svg>
                         <span>Done</span>
                     </button>
                     <button id="tooHardBtn" class="action-btn hard-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Too Hard</span>
                     </button>
                     <button id="pauseBtn" class="action-btn pause-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10 4H6v16h4V4zM18 4h-4v16h4V4z"/>
+                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M10 4H6v16h4V4zM18 4h-4v16h4V4z" />
                         </svg>
                         <span>Pause</span>
                     </button>
@@ -90,18 +131,60 @@
             </div>
         </div>
 
-        <!-- Paused Screen -->
+        <!-- Task Paused Screen -->
         <div id="pausedScreen" class="screen">
             <div class="paused-container">
                 <h2>Task Paused</h2>
                 <p class="paused-text">Your progress is saved. You can come back anytime.</p>
-                <button id="newTaskBtn" class="primary-btn">
-                    <span>Start New Task</span>
+                <button id="resumeTaskBtn" class="primary-btn">
+                    <span>Resume Task</span>
                 </button>
+                <button class="secondary-btn newTaskLink">Start New Task</button>
+            </div>
+        </div>
+
+        <!-- Victory Screen (The Big Win) -->
+        <div id="victoryScreen" class="screen">
+            <div class="victory-container">
+                <div class="victory-icon">🏆</div>
+                <h2>Task Crushed!</h2>
+                <p class="victory-text">You did it! Take a micro-moment to celebrate your win.</p>
+                <div class="victory-stats">
+                    <p>Total Micro-Wins: <span id="totalWins">0</span></p>
+                </div>
+                <button class="primary-btn newTaskLink">
+                    <span>Start Another Task</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insights Modal -->
+    <div id="insightsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Productivity Insights</h2>
+                <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="insightsLoading" class="insights-status">Analyzing your rhythms...</div>
+                <div id="insightsData" class="insights-grid" style="display: none;">
+                    <div class="insight-card">
+                        <h3>Peak Hour</h3>
+                        <p id="peakHourValue" class="insight-value">--:00</p>
+                        <p class="insight-label">Your high-focus window</p>
+                    </div>
+                    <div class="insight-card">
+                        <h3>Best Energy</h3>
+                        <p id="bestEnergyValue" class="insight-value">---</p>
+                        <p class="insight-label">When you crush steps fastest</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>

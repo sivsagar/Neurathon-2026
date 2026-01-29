@@ -24,6 +24,7 @@ class Database:
                     original_goal TEXT NOT NULL,
                     current_step_index INTEGER DEFAULT 0,
                     status TEXT DEFAULT 'active',
+                    energy_level TEXT, -- low, medium, high
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
@@ -35,23 +36,25 @@ class Database:
                     task_id TEXT NOT NULL,
                     step_text TEXT NOT NULL,
                     estimated_seconds INTEGER,
+                    actual_duration_seconds INTEGER,
                     step_order INTEGER,
                     simplification_level INTEGER DEFAULT 0,
                     completed BOOLEAN DEFAULT FALSE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    completed_at TIMESTAMP,
                     FOREIGN KEY (task_id) REFERENCES tasks(id)
                 )
             """)
             
             await db.commit()
     
-    async def create_task(self, goal: str) -> str:
+    async def create_task(self, goal: str, energy_level: Optional[str] = None) -> str:
         """Create new task and return task_id."""
         task_id = str(uuid.uuid4())
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
-                "INSERT INTO tasks (id, original_goal, status) VALUES (?, ?, ?)",
-                (task_id, goal, "active")
+                "INSERT INTO tasks (id, original_goal, status, energy_level) VALUES (?, ?, ?, ?)",
+                (task_id, goal, "active", energy_level)
             )
             await db.commit()
         return task_id
@@ -76,12 +79,16 @@ class Database:
             await db.commit()
         return step_id
     
-    async def mark_step_completed(self, step_id: str):
-        """Mark step as completed."""
+    async def mark_step_completed(self, step_id: str, duration: Optional[int] = None):
+        """Mark step as completed with optional duration."""
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
-                "UPDATE steps SET completed = TRUE WHERE id = ?",
-                (step_id,)
+                """UPDATE steps 
+                   SET completed = TRUE, 
+                       completed_at = CURRENT_TIMESTAMP,
+                       actual_duration_seconds = ? 
+                   WHERE id = ?""",
+                (duration, step_id)
             )
             await db.commit()
     
@@ -113,6 +120,16 @@ class Database:
                    WHERE task_id = ? AND completed = FALSE 
                    ORDER BY step_order DESC LIMIT 1""",
                 (task_id,)
+            ) as cursor:
+                row = await cursor.fetchone()
+                return dict(row) if row else None
+    
+    async def get_step(self, step_id: str) -> Optional[Dict[str, Any]]:
+        """Get step by ID."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT * FROM steps WHERE id = ?", (step_id,)
             ) as cursor:
                 row = await cursor.fetchone()
                 return dict(row) if row else None

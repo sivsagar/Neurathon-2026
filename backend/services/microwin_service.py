@@ -23,30 +23,30 @@ class MicroWinService:
         self.base_url = settings.ollama_base_url.rstrip('/')
         self.model = settings.ollama_model
     
-    async def generate_initial_step(self, goal: str) -> Dict[str, Any]:
+    async def generate_initial_step(self, goal: str, energy_level: str = "medium") -> Dict[str, Any]:
         """
         Generate the first micro-step for a task.
         
         Returns:
-            {"step": str, "estimated_seconds": int}
+            {"step": str, "estimated_seconds": int, "is_complete": bool}
         """
         sanitized_goal = sanitize_goal_for_llm(goal)
-        user_prompt = get_initial_step_prompt(sanitized_goal)
+        user_prompt = get_initial_step_prompt(sanitized_goal, energy_level)
         
         response = await self._call_llm(user_prompt)
         validated_step = self._validate_step(response)
         
         return validated_step
     
-    async def generate_next_step(self, goal: str, previous_step: str) -> Dict[str, Any]:
+    async def generate_next_step(self, goal: str, previous_step: str, energy_level: str = "medium") -> Dict[str, Any]:
         """
         Generate the next micro-step after completing the previous one.
         
         Returns:
-            {"step": str, "estimated_seconds": int}
+            {"step": str, "estimated_seconds": int, "is_complete": bool}
         """
         sanitized_goal = sanitize_goal_for_llm(goal)
-        user_prompt = get_next_step_prompt(sanitized_goal, previous_step)
+        user_prompt = get_next_step_prompt(sanitized_goal, previous_step, energy_level)
         
         response = await self._call_llm(user_prompt)
         validated_step = self._validate_step(response)
@@ -147,7 +147,8 @@ class MicroWinService:
         
         return {
             "step": step_text,
-            "estimated_seconds": estimated_seconds
+            "estimated_seconds": estimated_seconds,
+            "is_complete": step_data.get("is_complete", False)
         }
 
 

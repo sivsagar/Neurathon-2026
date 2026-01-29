@@ -7,6 +7,7 @@ from datetime import datetime
 class TaskStartRequest(BaseModel):
     """Request to start a new task."""
     goal: str = Field(..., min_length=1, max_length=500, description="Natural language task description")
+    energy_level: Optional[Literal["low", "medium", "high"]] = None
 
 
 class MicroWinResponse(BaseModel):
@@ -17,6 +18,7 @@ class MicroWinResponse(BaseModel):
     estimated_seconds: int
     simplification_level: int = 0
     step_order: int
+    is_complete: bool = False
 
 
 class SimplifyRequest(BaseModel):
@@ -31,6 +33,7 @@ class TaskActionRequest(BaseModel):
     task_id: str
     step_id: str
     action: Literal["done", "pause"]
+    duration_seconds: Optional[int] = None
 
 
 class TaskResumeResponse(BaseModel):

@@ -15,6 +15,7 @@ from models import (
     ErrorResponse
 )
 from services.microwin_service import microwin_service
+from services.scheduler_service import scheduler_service
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -61,12 +62,15 @@ async def start_task(request: TaskStartRequest):
     3. Returns the step to display
     """
     try:
-        # Create task in database
-        task_id = await db.create_task(request.goal)
-        logger.info(f"Created task {task_id} for goal: {request.goal}")
+        # Create task in database with optional energy level
+        task_id = await db.create_task(request.goal, energy_level=request.energy_level)
+        logger.info(f"Created task {task_id} (Energy: {request.energy_level}) for goal: {request.goal}")
         
         # Generate first micro-step
-        step_data = await microwin_service.generate_initial_step(request.goal)
+        step_data = await microwin_service.generate_initial_step(
+            request.goal, 
+            energy_level=request.energy_level or "medium"
+        )
         
         # Save step to database
         step_order = 0
@@ -86,7 +90,8 @@ async def start_task(request: TaskStartRequest):
             step_text=step_data["step"],
             estimated_seconds=step_data["estimated_seconds"],
             simplification_level=0,
-            step_order=step_order
+            step_order=step_order,
+            is_complete=step_data.get("is_complete", False)
         )
     
     except Exception as e:
@@ -105,8 +110,9 @@ async def next_step(request: TaskActionRequest):
     3. Returns the new step
     """
     try:
-        # Mark current step as completed
-        await db.mark_step_completed(request.step_id)
+        # Mark current step as completed with duration
+        await db.mark_step_completed(request.step_id, duration=request.duration_seconds)
+        logger.info(f"Completed step {request.step_id} in {request.duration_seconds}s")
         
         # Get task details
         task = await db.get_task(request.task_id)
@@ -114,13 +120,14 @@ async def next_step(request: TaskActionRequest):
             raise HTTPException(status_code=404, detail="Task not found")
         
         # Get the completed step text for context
-        current_step = await db.get_current_step(request.task_id)
-        previous_step_text = current_step["step_text"] if current_step else ""
+        completed_step = await db.get_step(request.step_id)
+        previous_step_text = completed_step["step_text"] if completed_step else ""
         
         # Generate next step
         step_data = await microwin_service.generate_next_step(
             goal=task["original_goal"],
-            previous_step=previous_step_text
+            previous_step=previous_step_text,
+            energy_level=task.get("energy_level") or "medium"
         )
         
         # Save new step
@@ -141,7 +148,8 @@ async def next_step(request: TaskActionRequest):
             step_text=step_data["step"],
             estimated_seconds=step_data["estimated_seconds"],
             simplification_level=0,
-            step_order=next_order
+            step_order=next_order,
+            is_complete=step_data.get("is_complete", False)
         )
     
     except HTTPException:
@@ -193,7 +201,8 @@ async def simplify_step(request: SimplifyRequest):
             step_text=step_data["step"],
             estimated_seconds=step_data["estimated_seconds"],
             simplification_level=current_step["simplification_level"] + 1,
-            step_order=current_step["step_order"]
+            step_order=current_step["step_order"],
+            is_complete=step_data.get("is_complete", False)
         )
     
     except HTTPException:
@@ -255,6 +264,19 @@ async def resume_task(task_id: str):
         raise
     except Exception as e:
         logger.error(f"Error resuming task: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/insights")
+async def get_insights():
+    """
+    Get energy-adaptive scheduler insights.
+    Analyzes historical data to find peak cognitive hours.
+    """
+    try:
+        return await scheduler_service.get_energy_insights()
+    except Exception as e:
+        logger.error(f"Error getting insights: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
