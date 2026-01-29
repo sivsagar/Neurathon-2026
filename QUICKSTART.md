@@ -44,7 +44,11 @@ Navigate to: **http://localhost:8000**
 
 2. **Click Start** and wait 3-5 seconds
 
-3. **You'll see ONE action** like:
+3. **Select your Energy Level**:
+   - 🔋 **High**: Standard micro-steps.
+   - 🪫 **Low**: "Micro-micro" steps (e.g., "Just sit down at your desk").
+
+4. **You'll see ONE action** like:
    - "Pick up the first item you see on the floor"
    - Time estimate: ~8 seconds
 
@@ -166,9 +170,10 @@ This file persists across Docker restarts. Your data never leaves your machine.
 1. Start Docker: `docker-compose up --build`
 2. Open browser: `http://localhost:8000`
 3. Try: "Clean my room"
-4. See: "Pick up the first item you see on the floor"
-5. Click "Too Hard" to see simplification
-6. Click "Done" to see next step
+4. Adjust Energy: Toggle between Low/High to see how the AI adapts.
+5. See: "Pick up the first item you see on the floor"
+6. Complete: Click "Done" and watch the **Dopamine Bar** pop!
+7. Insights: Check the top-left icon to see performance analytics.
 
 **Total time:** <3 minutes to see core functionality
 

@@ -21,12 +21,13 @@ graph TB
     subgraph "Frontend (Browser)"
         UI[Single-Task UI]
         FontToggle[Font Toggle]
-        LocalCache[IndexedDB Cache]
+        VS[Voice Support]
     end
     
     subgraph "Backend (FastAPI)"
         API[REST API]
         MicroWinService[Micro-Win Generator]
+        SchedulerService[Energy Scheduler]
         Validator[Step Validator]
         DB[SQLite Database]
     end
@@ -36,10 +37,11 @@ graph TB
     end
     
     UI --> API
-    FontToggle --> LocalCache
     API --> MicroWinService
+    API --> SchedulerService
     MicroWinService --> Validator
     MicroWinService --> LLM
+    SchedulerService --> DB
     Validator --> DB
     DB --> API
 ```
@@ -63,6 +65,7 @@ graph TB
 - `POST /api/task/simplify` - Generate simpler version of current step
 - `POST /api/task/pause` - Save task state
 - `GET /api/task/resume/{id}` - Restore paused task
+- `GET /api/insights` - Get energy-adaptive performance analytics
 
 #### 2. Micro-Win Service (`services/microwin_service.py`)
 **Responsibilities:**
@@ -77,7 +80,14 @@ graph TB
 - Must start with concrete action verb
 - JSON response format enforcement
 
-#### 3. Database Layer (`database.py`)
+#### 3. Scheduler Service (`services/scheduler_service.py`) [NEW]
+**Responsibilities:**
+- Analyzing historical completion data
+- Mapping efficiency across energy levels (Low/Medium/High)
+- Predicting peak performance hours (Time-series analysis)
+- Providing data-driven suggestions for task initiation
+
+#### 4. Database Layer (`database.py`)
 **Responsibilities:**
 - Async SQLite operations
 - Task and step CRUD operations
@@ -90,6 +100,7 @@ tasks:
   - original_goal (TEXT)
   - current_step_index (INTEGER)
   - status (TEXT: active/paused/completed)
+  - energy_level (TEXT: low/medium/high)
   - created_at, updated_at (TIMESTAMP)
 
 steps:
@@ -97,10 +108,12 @@ steps:
   - task_id (FOREIGN KEY)
   - step_text (TEXT)
   - estimated_seconds (INTEGER)
+  - actual_duration_seconds (INTEGER)
   - step_order (INTEGER)
   - simplification_level (INTEGER)
   - completed (BOOLEAN)
   - created_at (TIMESTAMP)
+  - completed_at (TIMESTAMP)
 ```
 
 #### 4. Prompt Templates (`prompts.py`)

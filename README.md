@@ -17,7 +17,7 @@ Neurodivergent individuals (ADHD, Autism, Dyslexia) often experience **Executive
 - **Overwhelm response**: Complex tasks trigger avoidance behavior
 
 **This is NOT a to-do app.** This is NOT a task manager.  
-This is a **psychological intervention tool** that converts overwhelming goals into **Micro-Wins**.
+This is a **Cognitive Prosthetic**—a psychological intervention tool that converts overwhelming goals into **Micro-Wins** while adapting to your natural body rhythms.
 
 ---
 
@@ -40,7 +40,8 @@ This is a **psychological intervention tool** that converts overwhelming goals i
 ### What Makes This Different?
 
 ❌ **Traditional apps**: "Break down 'clean room' into subtasks"  
-✅ **MicroWin**: Shows ONE step. Just one. Nothing else.
+✅ **MicroWin**: Shows ONE step. Just one. Nothing else.  
+🧠 **The Innovation**: It acts as a **Prefrontal Proxy**, taking over the exhausting job of planning while you focus entirely on execution.
 
 ---
 
@@ -110,6 +111,28 @@ If you press **"Too Hard"**, the AI recursively simplifies:
 
 ---
 
+## ⚡ Energy-Adaptive Scheduling
+
+MicroWin doesn't just break tasks down; it adapts to your **Cognitive Battery**.
+
+### The Energy Selector
+- 🔋 **High Energy**: AI gives standard micro-steps for maximum momentum.
+- 🪫 **Low Energy**: AI gives "micro-micro" steps (e.g., instead of "pick up item", it says "just look at the item").
+
+### Predictive Insights (Scheduler Service)
+The app analyzes your completion history to find your **Peak Productivity Hours**.
+- **Efficiency Mapping**: Real-time tracking of estimated vs. actual duration per energy level.
+- **Dynamic Suggestions**: Recommends the best energy setting based on the current time of day.
+
+---
+
+## 🏆 The Dopamine Loop (Gamification)
+
+Neurodivergent brains often lack "internal" reward signals. MicroWin provides **External Dopamine**:
+- **Progress Pop**: A visual "pop" animation and progress bar fill for every single completed micro-step.
+- **Victory Screen**: Celebratory UI animations and sound cues upon task completion.
+- **Micro-Moment Celebration**: Encourages a 10-second "victory lap" to reinforce positive habits.
+
 ## 🎨 Neuro-Inclusive Design
 
 ### Accessibility Features
@@ -160,7 +183,8 @@ Neurathon-2026/
 │   ├── models.py                   # Pydantic schemas
 │   ├── prompts.py                  # AI prompt templates
 │   └── services/
-│       └── microwin_service.py     # Core AI logic
+│       ├── microwin_service.py     # Core AI logic
+│       └── scheduler_service.py    # Energy & Peak analysis engine
 ├── frontend/
 │   ├── index.html                  # Single-page app
 │   ├── styles.css                  # Neuro-inclusive design
