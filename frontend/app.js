@@ -62,8 +62,16 @@ function initElements() {
 
 // ========== Screen Management ==========
 function showScreen(screenName) {
-    Object.values(screens).forEach(screen => screen.classList.remove('active'));
+    Object.values(screens).forEach(screen => {
+        screen.classList.remove('active');
+        screen.classList.remove('screen-switch');
+    });
     screens[screenName].classList.add('active');
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+        screens[screenName].classList.add('screen-switch');
+    });
 }
 
 // ========== API Client ==========

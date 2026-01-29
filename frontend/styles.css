@@ -8,27 +8,40 @@
 }
 
 :root {
-    /* High Contrast Color Palette (WCAG AAA) */
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #1a1a24;
-    --bg-tertiary: #2a2a3a;
+    /* Premium HSL Color Palette - Harmonious & Neuro-Inclusive */
+    --bg-primary: hsl(240, 20%, 3%);
+    --bg-secondary: hsl(240, 15%, 8%);
+    --bg-tertiary: hsla(240, 15%, 15%, 0.7);
 
-    --text-primary: #ffffff;
-    --text-secondary: #b8b8cc;
-    --text-muted: #808090;
+    --text-primary: hsl(0, 0%, 100%);
+    --text-secondary: hsl(240, 10%, 80%);
+    --text-muted: hsl(240, 5%, 60%);
 
-    --accent-primary: #00d9ff;
-    --accent-secondary: #7c3aed;
-    --accent-success: #10b981;
-    --accent-warning: #f59e0b;
-    --accent-danger: #ef4444;
+    --accent-primary: hsl(190, 100%, 50%);
+    /* Electric Cyan */
+    --accent-secondary: hsl(260, 80%, 65%);
+    /* Soft Purple */
+    --accent-success: hsl(150, 80%, 45%);
+    /* Emerald */
+    --accent-warning: hsl(35, 100%, 55%);
+    /* Gold */
+    --accent-danger: hsl(0, 85%, 60%);
+    /* Ruby */
 
-    /* Spacing */
+    /* Glassmorphism Tokens */
+    --glass-bg: hsla(240, 15%, 12%, 0.4);
+    --glass-border: hsla(0, 0%, 100%, 0.08);
+    --glass-blur: blur(12px);
+
+    /* Spacing & Motion */
     --space-xs: 8px;
     --space-sm: 12px;
     --space-md: 20px;
     --space-lg: 32px;
     --space-xl: 48px;
+
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-snappy: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Typography */
     --font-primary: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -42,13 +55,13 @@
 
     /* Borders & Radius */
     --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
 
     /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
 }
 
 /* ========== OpenDyslexic Font ========== */
@@ -71,7 +84,7 @@
 /* ========== Body & Layout ========== */
 body {
     font-family: var(--font-primary);
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: radial-gradient(circle at 50% -20%, hsl(260, 50%, 15%), var(--bg-primary));
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;
@@ -79,6 +92,7 @@ body {
     justify-content: center;
     padding: var(--space-md);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 body.dyslexic-font {
@@ -100,15 +114,17 @@ body.dyslexic-font {
 .icon-btn {
     width: 48px;
     height: 48px;
-    background: var(--bg-tertiary);
-    border: 2px solid var(--accent-primary);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
     border-radius: var(--radius-md);
     color: var(--accent-primary);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: var(--transition-smooth);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: var(--shadow-sm);
 }
 
 .icon-btn.small {
@@ -133,9 +149,13 @@ body.dyslexic-font {
     max-width: 600px;
     width: 100%;
     padding: var(--space-xl);
-    background: var(--bg-secondary);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 1;
 }
 
 /* ========== Header ========== */
@@ -188,18 +208,19 @@ body.dyslexic-font {
     padding: var(--space-md);
     font-size: var(--font-size-md);
     font-family: inherit;
-    background: var(--bg-tertiary);
-    border: 2px solid var(--bg-tertiary);
+    background: hsla(0, 0%, 100%, 0.03);
+    border: 2px solid hsla(0, 0%, 100%, 0.05);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     resize: vertical;
-    transition: all 0.2s ease;
+    transition: var(--transition-smooth);
 }
 
 .task-input:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+    background: hsla(0, 0%, 100%, 0.05);
+    box-shadow: 0 0 20px hsla(190, 100%, 50%, 0.1);
 }
 
 .task-input::placeholder {
@@ -387,10 +408,11 @@ body.dyslexic-font {
 
 .step-content {
     padding: var(--space-xl);
-    background: var(--bg-tertiary);
+    background: hsla(0, 0%, 100%, 0.03);
     border-radius: var(--radius-lg);
-    border: 3px solid var(--accent-primary);
-    box-shadow: var(--shadow-md);
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 8px 32px hsla(190, 100%, 50%, 0.1);
+    transition: var(--transition-smooth);
 }
 
 .step-text {
@@ -731,6 +753,65 @@ body.dyslexic-font {
 .insight-label {
     font-size: 12px;
     color: var(--text-muted);
+}
+
+/* ========== Background Ornaments ========== */
+.bg-ornament {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+.glow-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent-primary);
+    top: -100px;
+    left: -100px;
+}
+
+.glow-2 {
+    width: 600px;
+    height: 600px;
+    background: var(--accent-secondary);
+    bottom: -200px;
+    right: -100px;
+}
+
+/* ========== Animations ========== */
+.fade-in {
+    animation: fadeIn 0.8s var(--transition-smooth);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.screen-switch {
+    animation: screenSwitch 0.5s var(--transition-smooth);
+}
+
+@keyframes screenSwitch {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .insights-status {
