@@ -84,6 +84,19 @@ async def start_task(request: TaskStartRequest):
         
         logger.info(f"Generated first step for task {task_id}: {step_data['step']}")
         
+        # Proactively generate a preview of the next step (Tiimo-inspired)
+        next_preview = None
+        if not step_data.get("is_complete", False):
+            try:
+                preview_data = await microwin_service.generate_next_step(
+                    goal=request.goal,
+                    previous_step=step_data["step"],
+                    energy_level=request.energy_level or "medium"
+                )
+                next_preview = preview_data["step"]
+            except Exception as pe:
+                logger.warning(f"Failed to generate next_preview: {str(pe)}")
+
         return MicroWinResponse(
             task_id=task_id,
             step_id=step_id,
@@ -91,7 +104,8 @@ async def start_task(request: TaskStartRequest):
             estimated_seconds=step_data["estimated_seconds"],
             simplification_level=0,
             step_order=step_order,
-            is_complete=step_data.get("is_complete", False)
+            is_complete=step_data.get("is_complete", False),
+            next_preview=next_preview
         )
     
     except Exception as e:
@@ -141,6 +155,19 @@ async def next_step(request: TaskActionRequest):
         )
         
         logger.info(f"Generated next step for task {request.task_id}: {step_data['step']}")
+
+        # Proactively generate a preview of the following step
+        next_preview = None
+        if not step_data.get("is_complete", False):
+            try:
+                preview_data = await microwin_service.generate_next_step(
+                    goal=task["original_goal"],
+                    previous_step=step_data["step"],
+                    energy_level=task.get("energy_level") or "medium"
+                )
+                next_preview = preview_data["step"]
+            except Exception as pe:
+                logger.warning(f"Failed to generate next_preview: {str(pe)}")
         
         return MicroWinResponse(
             task_id=request.task_id,
@@ -149,7 +176,8 @@ async def next_step(request: TaskActionRequest):
             estimated_seconds=step_data["estimated_seconds"],
             simplification_level=0,
             step_order=next_order,
-            is_complete=step_data.get("is_complete", False)
+            is_complete=step_data.get("is_complete", False),
+            next_preview=next_preview
         )
     
     except HTTPException:

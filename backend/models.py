@@ -19,6 +19,7 @@ class MicroWinResponse(BaseModel):
     simplification_level: int = 0
     step_order: int
     is_complete: bool = False
+    next_preview: Optional[str] = None
 
 
 class SimplifyRequest(BaseModel):

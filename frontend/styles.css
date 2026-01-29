@@ -401,6 +401,81 @@ body.dyslexic-font {
     line-height: 1.5;
 }
 
+/* ========== Coming Up Next (Preview) ========== */
+.next-step-preview {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--text-muted);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    filter: blur(0.5px);
+}
+
+.next-step-preview:hover {
+    opacity: 0.8;
+    filter: blur(0);
+}
+
+.preview-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.preview-text {
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+}
+
+/* ========== Timeline Slices ========== */
+.timeline-container {
+    display: flex;
+    gap: 6px;
+    margin: var(--space-sm) 0;
+    justify-content: center;
+}
+
+.timeline-slice {
+    height: 8px;
+    flex: 1;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.timeline-slice.past {
+    background: var(--accent-success);
+    opacity: 0.4;
+}
+
+.timeline-slice.active {
+    background: var(--accent-primary);
+    box-shadow: 0 0 10px var(--accent-primary);
+    animation: pulse-shimmer 2s infinite;
+}
+
+@keyframes pulse-shimmer {
+    0% {
+        opacity: 0.6;
+        transform: scaleY(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scaleY(1.3);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: scaleY(1);
+    }
+}
+
 /* ========== Action Buttons ========== */
 .action-buttons {
     display: flex;

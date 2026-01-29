@@ -13,6 +13,7 @@ const state = {
     currentTaskId: null,
     currentStepId: null,
     currentGoal: null,
+    nextPreview: null,
     energyLevel: 'medium',
     stepsCompleted: 0,
     stepStartTime: null,
@@ -52,7 +53,10 @@ function initElements() {
         bestEnergyValue: document.getElementById('bestEnergyValue'),
         totalWins: document.getElementById('totalWins'),
         resumeTaskBtn: document.getElementById('resumeTaskBtn'),
-        newTaskLinks: document.querySelectorAll('.newTaskLink')
+        newTaskLinks: document.querySelectorAll('.newTaskLink'),
+        nextStepPreview: document.getElementById('nextStepPreview'),
+        nextStepText: document.getElementById('nextStepText'),
+        timelineSlices: document.getElementById('timelineSlices')
     };
 }
 
@@ -110,6 +114,7 @@ async function startTask(goal) {
 
         displayStep(response);
         updateProgress(0);
+        renderTimeline(0, 5); // Default to 5 steps of timeline for now
         showScreen('step');
 
         // Auto-speak first step
@@ -144,6 +149,8 @@ async function completeStepAndGetNext() {
         } else {
             displayStep(response);
             updateProgress(state.stepsCompleted);
+            renderTimeline(state.stepsCompleted, 10); // Proportional timeline
+            triggerNudge();
 
             // Pop effect
             elements.dopamineBar.parentElement.classList.add('dopamine-pop');
@@ -197,8 +204,50 @@ function displayStep(stepData) {
     elements.stepText.textContent = stepData.step_text;
     elements.stepBadge.textContent = `~${stepData.estimated_seconds} sec`;
 
+    // Handle Tiimo Next Preview
+    if (stepData.next_preview) {
+        elements.nextStepPreview.style.display = 'block';
+        elements.nextStepText.textContent = stepData.next_preview;
+    } else {
+        elements.nextStepPreview.style.display = 'none';
+    }
+
     // Update aria-label for accessibility
     elements.stepBadge.setAttribute('aria-label', `Estimated time: ${stepData.estimated_seconds} seconds`);
+}
+
+// ========== Tiimo Inspired Logic ==========
+function renderTimeline(current, total) {
+    if (!elements.timelineSlices) return;
+
+    // We'll show up to 10 slices for task visualization
+    const maxSlices = 10;
+    const progress = Math.min((current / maxSlices) * maxSlices, maxSlices);
+
+    elements.timelineSlices.innerHTML = '';
+
+    for (let i = 0; i < maxSlices; i++) {
+        const slice = document.createElement('div');
+        slice.className = 'timeline-slice';
+
+        if (i < current) {
+            slice.classList.add('past');
+        } else if (i === current) {
+            slice.classList.add('active');
+        }
+
+        elements.timelineSlices.appendChild(slice);
+    }
+}
+
+function triggerNudge() {
+    // Haptic Nudge (supported on mobile)
+    if ('vibrate' in navigator) {
+        navigator.vibrate([10, 30, 10]);
+    }
+
+    // Visual Nudge logic is handled via CSS animation on the .active slice
+    // but we can add more here if needed
 }
 
 // ========== Insights Modal ==========
