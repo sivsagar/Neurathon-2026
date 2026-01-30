@@ -108,8 +108,17 @@ class MicroWinService:
             ValueError: If step doesn't meet criteria
         """
         try:
-            step_data = json.loads(llm_response)
-        except json.JSONDecodeError:
+            # Clean markdown code blocks if present
+            clean_json = llm_response.strip()
+            if "```json" in clean_json:
+                clean_json = re.search(r"```json\s*(.*?)\s*```", clean_json, re.DOTALL).group(1)
+            elif "```" in clean_json:
+                clean_json = re.search(r"```\s*(.*?)\s*```", clean_json, re.DOTALL).group(1)
+            
+            step_data = json.loads(clean_json)
+        except (json.JSONDecodeError, AttributeError):
+            # Fallback for poorly formatted strings
+            logger.warning(f"Failed to parse LLM response: {llm_response}")
             raise ValueError("Invalid JSON response from LLM")
         
         # Ensure required fields

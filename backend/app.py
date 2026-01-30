@@ -12,6 +12,10 @@ from models import (
     SimplifyRequest,
     TaskActionRequest,
     TaskResumeResponse,
+    UserCreateRequest,
+    UserResponse,
+    DietTargetRequest,
+    DietTargetResponse,
     ErrorResponse
 )
 from services.microwin_service import microwin_service
@@ -63,7 +67,7 @@ async def start_task(request: TaskStartRequest):
     """
     try:
         # Create task in database with optional energy level
-        task_id = await db.create_task(request.goal, energy_level=request.energy_level)
+        task_id = await db.create_task(request.goal, user_id=request.user_id, energy_level=request.energy_level)
         logger.info(f"Created task {task_id} (Energy: {request.energy_level}) for goal: {request.goal}")
         
         # Generate first micro-step
@@ -108,9 +112,12 @@ async def start_task(request: TaskStartRequest):
             next_preview=next_preview
         )
     
+    except ValueError as ve:
+        logger.error(f"AI Generation error: {str(ve)}")
+        raise HTTPException(status_code=422, detail=f"Therapist is thinking... try again: {str(ve)}")
     except Exception as e:
         logger.error(f"Error starting task: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Something went wrong on our end. Take a deep breath.")
 
 
 @app.post("/api/task/next", response_model=MicroWinResponse)
@@ -126,12 +133,17 @@ async def next_step(request: TaskActionRequest):
     try:
         # Mark current step as completed with duration
         await db.mark_step_completed(request.step_id, duration=request.duration_seconds)
-        logger.info(f"Completed step {request.step_id} in {request.duration_seconds}s")
         
-        # Get task details
+        # Get task details (reuse for context)
         task = await db.get_task(request.task_id)
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
+        
+        # Award XP for step completion (Micro-Win!)
+        if task.get("user_id"):
+            await db.add_xp(task["user_id"], 10) # 10 XP per micro-win
+            
+        logger.info(f"Completed step {request.step_id} in {request.duration_seconds}s. Awarded XP.")
         
         # Get the completed step text for context
         completed_step = await db.get_step(request.step_id)
@@ -312,6 +324,54 @@ async def get_insights():
 async def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "service": "MicroWin"}
+
+
+# ========== USER & PROFILE ENDPOINTS ==========
+
+@app.post("/api/users", response_model=UserResponse)
+async def create_user(request: UserCreateRequest):
+    """Create a new user profile."""
+    try:
+        user_id = await db.create_user(request.name, request.avatar_url, request.role)
+        # Fetch back for verification/response
+        users = await db.get_users()
+        user = next((u for u in users if u["id"] == user_id), None)
+        return user
+    except Exception as e:
+        logger.error(f"Error creating user: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/users", response_model=list[UserResponse])
+async def list_users():
+    """List all available user profiles."""
+    try:
+        return await db.get_users()
+    except Exception as e:
+        logger.error(f"Error listing users: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ========== DIET & THERAPY ENDPOINTS ==========
+
+@app.post("/api/diet/targets", response_model=DietTargetResponse)
+async def create_diet_target(request: DietTargetRequest):
+    """Create a new ADHD nutrition anchor."""
+    try:
+        target_id = await db.create_diet_target(request.user_id, request.target_text)
+        targets = await db.get_diet_targets(request.user_id)
+        target = next((t for t in targets if t["id"] == target_id), None)
+        return target
+    except Exception as e:
+        logger.error(f"Error creating diet target: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/diet/targets/{user_id}", response_model=list[DietTargetResponse])
+async def get_diet_targets(user_id: str):
+    """Get nutrition anchors for a specific user."""
+    try:
+        return await db.get_diet_targets(user_id)
+    except Exception as e:
+        logger.error(f"Error getting diet targets: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Mount static files (frontend)

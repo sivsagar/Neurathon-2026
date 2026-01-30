@@ -18,18 +18,40 @@ class Database:
     async def init_db(self):
         """Initialize database schema."""
         async with aiosqlite.connect(self.db_path) as db:
+            # Users Table
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    avatar_url TEXT,
+                    role TEXT DEFAULT 'patient', -- patient, therapist
+                    xp INTEGER DEFAULT 0,
+                    level INTEGER DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+
+            # Tasks Table (with user_id)
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS tasks (
                     id TEXT PRIMARY KEY,
+                    user_id TEXT,
                     original_goal TEXT NOT NULL,
                     current_step_index INTEGER DEFAULT 0,
                     status TEXT DEFAULT 'active',
-                    energy_level TEXT, -- low, medium, high
+                    energy_level TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
                 )
             """)
             
+            # Check if user_id column exists (migration)
+            try:
+                await db.execute("ALTER TABLE tasks ADD COLUMN user_id TEXT REFERENCES users(id)")
+            except:
+                pass # Already exists
+
             await db.execute("""
                 CREATE TABLE IF NOT EXISTS steps (
                     id TEXT PRIMARY KEY,
@@ -45,16 +67,72 @@ class Database:
                     FOREIGN KEY (task_id) REFERENCES tasks(id)
                 )
             """)
+
+            # Diet Targets Table
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS diet_targets (
+                    id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    target_text TEXT NOT NULL,
+                    completed BOOLEAN DEFAULT FALSE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                )
+            """)
+
+            # Rewards Table
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS rewards (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    description TEXT,
+                    xp_cost INTEGER NOT NULL,
+                    type TEXT -- theme, badge, etc
+                )
+            """)
             
             await db.commit()
     
-    async def create_task(self, goal: str, energy_level: Optional[str] = None) -> str:
+    async def create_user(self, name: str, avatar_url: Optional[str] = None, role: str = "patient") -> str:
+        """Create a new user profile."""
+        user_id = str(uuid.uuid4())
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "INSERT INTO users (id, name, avatar_url, role) VALUES (?, ?, ?, ?)",
+                (user_id, name, avatar_url, role)
+            )
+            await db.commit()
+        return user_id
+
+    async def get_users(self) -> list[Dict[str, Any]]:
+        """List all users."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT * FROM users") as cursor:
+                rows = await cursor.fetchall()
+                return [dict(row) for row in rows]
+
+    async def add_xp(self, user_id: str, xp_to_add: int):
+        """Award XP to user and handle leveling."""
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "UPDATE users SET xp = xp + ? WHERE id = ?",
+                (xp_to_add, user_id)
+            )
+            # Simple level calc: floor(sqrt(xp/100)) + 1
+            await db.execute(
+                "UPDATE users SET level = (CAST(SQRT(xp/100.0) AS INTEGER) + 1) WHERE id = ?",
+                (user_id,)
+            )
+            await db.commit()
+
+    async def create_task(self, goal: str, user_id: Optional[str] = None, energy_level: Optional[str] = None) -> str:
         """Create new task and return task_id."""
         task_id = str(uuid.uuid4())
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(
-                "INSERT INTO tasks (id, original_goal, status, energy_level) VALUES (?, ?, ?, ?)",
-                (task_id, goal, "active", energy_level)
+                "INSERT INTO tasks (id, user_id, original_goal, status, energy_level) VALUES (?, ?, ?, ?, ?)",
+                (task_id, user_id, goal, "active", energy_level)
             )
             await db.commit()
         return task_id
@@ -143,6 +221,28 @@ class Database:
             ) as cursor:
                 result = await cursor.fetchone()
                 return (result[0] or -1) + 1
+
+    async def create_diet_target(self, user_id: str, target_text: str) -> str:
+        """Create a new diet target."""
+        target_id = str(uuid.uuid4())
+        async with aiosqlite.connect(self.db_path) as db:
+            await db.execute(
+                "INSERT INTO diet_targets (id, user_id, target_text) VALUES (?, ?, ?)",
+                (target_id, user_id, target_text)
+            )
+            await db.commit()
+        return target_id
+
+    async def get_diet_targets(self, user_id: str) -> list[Dict[str, Any]]:
+        """Get diet targets for a user."""
+        async with aiosqlite.connect(self.db_path) as db:
+            db.row_factory = aiosqlite.Row
+            async with db.execute(
+                "SELECT * FROM diet_targets WHERE user_id = ? ORDER BY created_at DESC",
+                (user_id,)
+            ) as cursor:
+                rows = await cursor.fetchall()
+                return [dict(row) for row in rows]
 
 
 # Global database instance

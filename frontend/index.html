@@ -5,197 +5,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="MicroWin - Cognitive prosthetic for neurodivergent users overcoming task initiation paralysis">
-    <title>MicroWin: The Cognitive Prosthetic</title>
+        content="MicroWin - Therapeutic cognitive prosthetic for neurodivergent users overcoming task initiation paralysis">
+    <title>MicroWin 2.0: Therapeutic Evolution</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Settings Panel (Top-right) -->
-    <div class="settings-panel">
-        <button id="insightsToggle" class="icon-btn" aria-label="View productivity insights" title="Energy Insights">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                <line x1="8" y1="11" x2="14" y2="11"></line>
-                <line x1="11" y1="8" x2="11" y2="14"></line>
-            </svg>
-        </button>
-        <button id="fontToggle" class="icon-btn" aria-label="Toggle dyslexia-friendly font" title="Toggle Font">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- Main Container -->
-    <!-- Background Ornaments for Depth -->
+    <!-- Background Ornaments -->
     <div class="bg-ornament glow-1"></div>
     <div class="bg-ornament glow-2"></div>
+    <div class="bg-ornament glow-3"
+        style="width: 500px; height: 500px; background: radial-gradient(circle, var(--accent-success), transparent 70%); top: 40%; right: -100px; animation: float 18s infinite alternate ease-in-out; opacity: 0.1;">
+    </div>
+
+    <!-- Top HUD (XP & Level) -->
+    <div class="top-hud fade-in">
+        <div class="user-profile" id="currentProfile" title="Switch User Profile">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" id="userAvatar">
+            <div class="user-info">
+                <span id="userName" class="user-name">Loading...</span>
+                <span id="userLevel" class="user-level">Lvl 1</span>
+            </div>
+        </div>
+        <div class="xp-container">
+            <div id="userXpBar" class="xp-bar" style="width: 0%"></div>
+            <span id="xpText" class="xp-text">0 / 100 XP</span>
+        </div>
+    </div>
+
+    <!-- Settings Panel (Top-right) -->
+    <div class="settings-panel">
+        <button id="insightsToggle" class="icon-btn" title="Cognitive Insights">
+            <span>📊</span>
+        </button>
+        <button id="dietToggle" class="icon-btn" title="Nutrition Anchors">
+            <span>🥗</span>
+        </button>
+        <button id="fontToggle" class="icon-btn" title="Toggle Dyslexic Font">
+            <span>Aa</span>
+        </button>
+    </div>
 
     <div class="container fade-in">
-        <!-- Logo/Header -->
         <header class="header">
             <h1>MicroWin</h1>
-            <p class="tagline">The Cognitive Prosthetic</p>
+            <p>Your Therapeutic Companion</p>
         </header>
 
-        <!-- Input Screen -->
-        <div id="inputScreen" class="screen active">
-            <div class="input-container">
-                <label for="taskInput" class="screen-title">What would you like to work on?</label>
-                <textarea id="taskInput" class="task-input"
-                    placeholder="e.g., Clean my room, Reply to email, Start homework..." rows="3" maxlength="500"
-                    aria-describedby="taskInputHelp"></textarea>
-                <p id="taskInputHelp" class="help-text">Describe any task that feels overwhelming</p>
+        <main class="content">
+            <!-- Screen 1: Task Input -->
+            <section id="inputScreen" class="screen active">
+                <div class="input-card">
+                    <label for="taskInput" class="label-muted">What's the one thing on your mind?</label>
+                    <textarea id="taskInput" class="task-input" placeholder="e.g., Clean the kitchen table..."
+                        rows="3"></textarea>
 
-                <div class="energy-selector">
-                    <p class="selector-label">How's your energy level?</p>
-                    <div class="energy-options">
-                        <button class="energy-btn" data-level="low" title="Low energy - very small steps">Low</button>
-                        <button class="energy-btn active" data-level="medium"
-                            title="Medium energy - standard steps">Medium</button>
-                        <button class="energy-btn" data-level="high"
-                            title="High energy - can handle bigger steps">High</button>
+                    <div class="input-actions-row">
+                        <div class="energy-selector">
+                            <span class="label-tiny">Your Energy:</span>
+                            <div class="energy-options">
+                                <button class="energy-btn" data-level="low" title="Smallest possible steps">🔋
+                                    Low</button>
+                                <button class="energy-btn active" data-level="medium" title="Standard micro-steps">🔋
+                                    Med</button>
+                                <button class="energy-btn" data-level="high" title="Steady progress steps">🔋
+                                    High</button>
+                            </div>
+                        </div>
+                        <button id="visionBtn" class="icon-btn vision-btn" title="Scan Environment with Vision">
+                            <span>👁️</span>
+                        </button>
                     </div>
-                </div>
 
-                <button id="startBtn" class="primary-btn" disabled>
-                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                    <span>Start</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Loading Screen -->
-        <div id="loadingScreen" class="screen">
-            <div class="loading-container">
-                <div class="spinner" aria-label="Loading"></div>
-                <p class="loading-text">Breaking it down for you...</p>
-            </div>
-        </div>
-
-        <!-- Step Screen (Single-Task View) -->
-        <div id="stepScreen" class="screen">
-            <div class="step-container">
-                <div class="step-header">
-                    <span id="stepBadge" class="time-badge" aria-label="Estimated time">~10 sec</span>
-                    <button id="speakBtn" class="icon-btn small" title="Read step aloud">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.08" />
-                        </svg>
+                    <button id="startBtn" class="primary-btn" disabled>
+                        <span>Start Healing</span>
+                        <span class="btn-shine"></span>
                     </button>
                 </div>
-                <!-- Dopamine Bar (Progress) -->
-                <div class="progress-wrapper">
-                    <div id="dopamineBar" class="progress-bar" style="width: 0%"></div>
+            </section>
+
+            <!-- Screen 2: Loading (Therapeutic) -->
+            <section id="loadingScreen" class="screen">
+                <div class="loading-container">
+                    <div class="pulse-circle"></div>
+                    <p class="loading-text">Identifying your first win...</p>
+                    <p class="therapeutic-note">Take a deep breath. I've got the planning from here.</p>
                 </div>
+            </section>
+
+            <!-- Screen 3: The Micro-Win -->
+            <section id="stepScreen" class="screen">
+                <div id="timelineSlices" class="timeline-slices"></div>
                 <div class="step-content">
-                    <p id="stepText" class="step-text">Pick up the first item you see on the floor</p>
-                </div>
+                    <div id="stepBadge" class="step-badge">~10 sec</div>
+                    <h2 id="stepText">Touch the edge of the kitchen table</h2>
 
-                <!-- Coming Up Next (Tiimo-inspired) -->
-                <div id="nextStepPreview" class="next-step-preview">
-                    <span class="preview-label">COMING UP NEXT</span>
-                    <p id="nextStepText" class="preview-text">...</p>
-                </div>
-
-                <!-- Visual Timeline Slices (Tiimo-inspired) -->
-                <div id="timelineSlices" class="timeline-container">
-                    <!-- Slices will be injected here by JS -->
-                </div>
-
-                <!-- Mid-task Energy Adjustment -->
-                <div class="energy-selector mini">
-                    <div class="energy-options">
-                        <button class="energy-btn" data-level="low" title="Low energy">L</button>
-                        <button class="energy-btn active" data-level="medium" title="Medium energy">M</button>
-                        <button class="energy-btn" data-level="high" title="High energy">H</button>
+                    <div id="nextStepPreview" class="next-preview">
+                        <span class="label-tiny">NEXT:</span>
+                        <p id="nextStepText">Pick up one piece of paper</p>
                     </div>
                 </div>
+
                 <div class="action-buttons">
                     <button id="doneBtn" class="action-btn done-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3">
-                            <path d="M5 13l4 4L19 7" />
-                        </svg>
                         <span>Done</span>
                     </button>
-                    <button id="tooHardBtn" class="action-btn hard-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Too Hard</span>
-                    </button>
-                    <button id="pauseBtn" class="action-btn pause-btn">
-                        <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M10 4H6v16h4V4zM18 4h-4v16h4V4z" />
-                        </svg>
-                        <span>Pause</span>
-                    </button>
+                    <div class="secondary-actions">
+                        <button id="tooHardBtn" class="action-btn hard-btn">Too Hard</button>
+                        <button id="pauseBtn" class="action-btn pause-btn">Pause</button>
+                        <button id="speakBtn" class="icon-btn small-btn" title="Read Aloud">
+                            <span>🔊</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Task Paused Screen -->
-        <div id="pausedScreen" class="screen">
-            <div class="paused-container">
-                <h2>Task Paused</h2>
-                <p class="paused-text">Your progress is saved. You can come back anytime.</p>
-                <button id="resumeTaskBtn" class="primary-btn">
-                    <span>Resume Task</span>
-                </button>
-                <button class="secondary-btn newTaskLink">Start New Task</button>
-            </div>
-        </div>
-
-        <!-- Victory Screen (The Big Win) -->
-        <div id="victoryScreen" class="screen">
-            <div class="victory-container">
-                <div class="victory-icon">🏆</div>
-                <h2>Task Crushed!</h2>
-                <p class="victory-text">You did it! Take a micro-moment to celebrate your win.</p>
-                <div class="victory-stats">
-                    <p>Total Micro-Wins: <span id="totalWins">0</span></p>
+            <!-- Screen 4: Paused -->
+            <section id="pausedScreen" class="screen">
+                <div class="paused-content">
+                    <h2>Resting...</h2>
+                    <p>Your win is waiting for you when you return.</p>
+                    <button id="resumeTaskBtn" class="primary-btn">Resume Win</button>
+                    <button class="newTaskLink text-link">Start a different task</button>
                 </div>
-                <button class="primary-btn newTaskLink">
-                    <span>Start Another Task</span>
-                </button>
+            </section>
+
+            <!-- Screen 5: Victory -->
+            <section id="victoryScreen" class="screen">
+                <div class="victory-content">
+                    <div class="victory-icon">🏆</div>
+                    <h2>Win Captured!</h2>
+                    <p>Your dopamine is rising. Total wins: <span id="totalWins">0</span></p>
+                    <button class="newTaskLink primary-btn">Next Objective</button>
+                    <p class="therapeutic-note">You are making progress. Even small steps count.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Cognitive Insights -->
+    <div id="insightsModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3>Cognitive Insights</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="insightsLoading">Analyzing patterns...</div>
+            <div id="insightsData" class="insights-grid">
+                <div class="insight-card">
+                    <span class="label">Peak Clarity</span>
+                    <span id="peakHourValue" class="value">--:00</span>
+                </div>
+                <div class="insight-card">
+                    <span class="label">Style</span>
+                    <span id="bestEnergyValue" class="value">--</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Insights Modal -->
-    <div id="insightsModal" class="modal">
-        <div class="modal-content">
+    <!-- Nutrition Dashboard -->
+    <div id="dietModal" class="modal">
+        <div class="modal-content glass">
             <div class="modal-header">
-                <h2>Productivity Insights</h2>
-                <button id="closeModal" class="close-btn">&times;</button>
+                <h3>ADHD Anchors</h3>
+                <button class="close-modal">&times;</button>
             </div>
-            <div class="modal-body">
-                <div id="insightsLoading" class="insights-status">Analyzing your rhythms...</div>
-                <div id="insightsData" class="insights-grid" style="display: none;">
-                    <div class="insight-card">
-                        <h3>Peak Hour</h3>
-                        <p id="peakHourValue" class="insight-value">--:00</p>
-                        <p class="insight-label">Your high-focus window</p>
-                    </div>
-                    <div class="insight-card">
-                        <h3>Best Energy</h3>
-                        <p id="bestEnergyValue" class="insight-value">---</p>
-                        <p class="insight-label">When you crush steps fastest</p>
-                    </div>
-                </div>
+            <p class="label-muted">Lifestyle supports for cognitive stability.</p>
+            <div id="dietList" class="diet-list"></div>
+            <button id="addDietTargetBtn" class="secondary-btn">+ New Anchor</button>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h3>Profiles</h3>
+                <button class="close-modal">&times;</button>
             </div>
+            <div id="userList" class="profile-grid"></div>
+            <button id="createProfileBtn" class="secondary-btn">+ New Patient</button>
         </div>
     </div>
 
