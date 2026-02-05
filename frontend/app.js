@@ -406,6 +406,7 @@ function setupEventListeners() {
     if (elements.fontToggle) {
         elements.fontToggle.onclick = () => {
             document.body.classList.toggle('dyslexic-font');
+            elements.fontToggle.classList.toggle('active');
         };
     }
 

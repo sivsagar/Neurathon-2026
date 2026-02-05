@@ -46,7 +46,8 @@
 
     /* Typography */
     --font-primary: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-dyslexic: 'OpenDyslexic', 'Lexend', sans-serif;
+    /* Fallback to system fonts known to be dyslexia-friendly if webfont fails */
+    --font-dyslexic: 'OpenDyslexic', 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
 
     --font-size-sm: 14px;
     --font-size-md: 18px;
@@ -75,6 +76,8 @@
 
 body.dyslexic-font {
     --font-primary: var(--font-dyslexic);
+    line-height: 2.0;
+    letter-spacing: 0.05em;
 }
 
 /* ========== Body & Layout ========== */

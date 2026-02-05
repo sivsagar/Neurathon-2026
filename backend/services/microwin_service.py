@@ -115,6 +115,11 @@ class MicroWinService:
             elif "```" in clean_json:
                 clean_json = re.search(r"```\s*(.*?)\s*```", clean_json, re.DOTALL).group(1)
             
+            # Attempt to find the first '{' and last '}' if it's mixed with text
+            json_match = re.search(r"(\{.*\})", clean_json, re.DOTALL)
+            if json_match:
+                clean_json = json_match.group(1)
+            
             step_data = json.loads(clean_json)
         except (json.JSONDecodeError, AttributeError):
             # Fallback for poorly formatted strings
